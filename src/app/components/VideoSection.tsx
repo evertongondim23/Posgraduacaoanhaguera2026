@@ -7,28 +7,47 @@ interface VideoSectionProps {
   description?: string;
 }
 
+function getEmbedUrl(url: string) {
+  if (url.includes('youtube.com/watch')) {
+    const videoId = url.split('v=')[1]?.split('&')[0];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+  if (url.includes('youtu.be/')) {
+    const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+  if (url.includes('vimeo.com/')) {
+    const videoId = url.split('vimeo.com/')[1]?.split('?')[0];
+    return `https://player.vimeo.com/video/${videoId}`;
+  }
+  return url;
+}
+
+function VideoEmbed({ src, title }: { src: string; title: string }) {
+  return (
+    <div className="relative">
+      <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl bg-gray-900">
+        <iframe
+          src={src}
+          title={title}
+          className="w-full h-full"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        />
+      </div>
+      <div className="absolute -inset-4 bg-gradient-to-r from-orange-500/20 to-orange-600/20 rounded-3xl -z-10 blur-xl" />
+    </div>
+  );
+}
+
 export function VideoSection({ 
   videoUrl = "https://youtu.be/gFkmUL-Yv9s?si=Y2TllXPpvf46v4u7",
   title = "Conheça Nossa Pós-Graduação",
   description = "Assista ao vídeo e descubra como este curso pode transformar sua jornada acadêmica e espiritual.",
 }: VideoSectionProps) {
-  const getEmbedUrl = (url: string) => {
-    if (url.includes('youtube.com/watch')) {
-      const videoId = url.split('v=')[1]?.split('&')[0];
-      return `https://www.youtube.com/embed/${videoId}`;
-    }
-    if (url.includes('youtu.be/')) {
-      const videoId = url.split('youtu.be/')[1]?.split('?')[0];
-      return `https://www.youtube.com/embed/${videoId}`;
-    }
-    if (url.includes('vimeo.com/')) {
-      const videoId = url.split('vimeo.com/')[1]?.split('?')[0];
-      return `https://player.vimeo.com/video/${videoId}`;
-    }
-    return url;
-  };
-
   const embedUrl = getEmbedUrl(videoUrl);
+  const conversationUrl = getEmbedUrl('https://youtu.be/MT7zJADCGgA');
 
   return (
     <section className="py-16 lg:py-24 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
@@ -79,27 +98,43 @@ export function VideoSection({
           </p>
         </motion.div>
 
-        {/* Video Container */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative"
         >
-          <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl bg-gray-900">
-            <iframe
-              src={embedUrl}
-              title={title}
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            />
-          </div>
+          <VideoEmbed src={embedUrl} title={title} />
+        </motion.div>
 
-          {/* Decorative border */}
-          <div className="absolute -inset-4 bg-gradient-to-r from-orange-500/20 to-orange-600/20 rounded-3xl -z-10 blur-xl" />
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, delay: 0.15 }}
+          className="text-center mt-16 mb-8"
+        >
+          <p className="text-sm tracking-[0.3em] text-gray-600 uppercase mb-3">
+            Conversas
+          </p>
+          <h3 className="text-2xl lg:text-4xl font-bold text-gray-900 mb-4 leading-tight">
+            Jesus de Nazaré: Ternura, Mistério e Subversão
+          </h3>
+          <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
+            Parte 1 de uma série de conversas sobre o livro (São Só Ideias, 2026), pelos professores Mariana Schietti e Jonathan Menezes (autor do livro).
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <VideoEmbed
+            src={conversationUrl}
+            title="Parte 1 — Jesus de Nazaré: Ternura, Mistério e Subversão, com Mariana Schietti e Jonathan Menezes"
+          />
         </motion.div>
 
         {/* Bottom CTA (opcional) */}
